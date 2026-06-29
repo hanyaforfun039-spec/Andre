@@ -1,0 +1,70 @@
+---
+/* DeliveryGallery — Web2: galeri SERAH TERIMA (bukti pengiriman unit).
+   Foto SPK (potret 3:4) dari bucket Supabase milik sales ini (site.storage).
+   Tema terang, grid rapi soft-radius + hover halus. Social proof yang estetik. */
+import type { SiteConfig } from '../lib/types';
+import { deliveryPhotos } from '../lib/storage';
+
+interface Props { site: SiteConfig }
+const { site } = Astro.props;
+
+const photos = deliveryPhotos(site).map((src, i) => ({
+  src,
+  alt: `Serah terima unit JAECOO bersama ${site.salesName} di ${site.address.locality} (${i + 1})`,
+}));
+---
+<section class="section section--lg dg" id="serah-terima" aria-labelledby="dg-h">
+  <div class="container">
+    <div class="dg-head" data-reveal>
+      <p class="eyebrow">Bukti Pengiriman</p>
+      <h2 id="dg-h">HandOver<br />Dealer Jaecoo {site.address.locality}</h2>
+    </div>
+
+    <ul class="dg-rail" role="list">
+      {photos.map((p, i) => (
+        <li class="dg-item" data-reveal data-reveal-delay={String((i % 4) + 1)}>
+          <img src={p.src} alt={p.alt} width="3024" height="4032" loading="lazy" decoding="async" />
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .dg-head { display: grid; gap: var(--space-2xs); max-width: 56ch; margin-inline: auto; justify-items: center; text-align: center; }
+
+  /* Rak geser horizontal (snap, bleed ke tepi viewport) */
+  .dg-rail {
+    margin-top: var(--space-2xl);
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(12rem, 15rem);
+    gap: var(--space-md);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: var(--gutter);
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    padding-bottom: var(--space-sm);
+    scrollbar-width: none;
+  }
+  .dg-rail::-webkit-scrollbar { display: none; }
+
+  .dg-item {
+    scroll-snap-align: start;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+  }
+  .dg-item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+  .dg-item:hover img { transform: scale(1.04); }
+</style>
