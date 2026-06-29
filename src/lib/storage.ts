@@ -14,15 +14,23 @@ export function publicUrl(bucket: string, file: string): string {
   return `${BASE}/storage/v1/object/public/${bucket}/${encodeURIComponent(file)}`;
 }
 
-export function consultantPhotoUrl(site: SiteConfig): string {
-  const bucket = site.storage?.bucket ?? DEFAULT_BUCKET;
-  return publicUrl(bucket, site.storage?.consultantPhoto ?? DEFAULT_CONSULTANT);
+/* Foto konsultan. null bila belum diset (komponen menyembunyikannya, tak ada
+   ikon gambar rusak). Tanpa blok storage sama sekali → default lama (Harto). */
+export function consultantPhotoUrl(site: SiteConfig): string | null {
+  const s = site.storage;
+  if (!s) return publicUrl(DEFAULT_BUCKET, DEFAULT_CONSULTANT);
+  if (!s.consultantPhoto) return null;
+  return publicUrl(s.bucket, s.consultantPhoto);
 }
 
+/* Daftar URL foto SPK. [] bila belum diset → galeri disembunyikan. */
 export function deliveryPhotos(site: SiteConfig): string[] {
-  const bucket = site.storage?.bucket ?? DEFAULT_BUCKET;
+  const s = site.storage;
+  if (!s) {
+    return Array.from({ length: DEFAULT_DELIVERY_COUNT }, (_, i) => publicUrl(DEFAULT_BUCKET, `SPK${i + 1}.webp`));
+  }
   const files =
-    site.storage?.deliveryFiles ??
-    Array.from({ length: site.storage?.deliveryCount ?? DEFAULT_DELIVERY_COUNT }, (_, i) => `SPK${i + 1}.webp`);
-  return files.map((f) => publicUrl(bucket, f));
+    s.deliveryFiles ??
+    (s.deliveryCount != null ? Array.from({ length: s.deliveryCount }, (_, i) => `SPK${i + 1}.webp`) : []);
+  return files.map((f) => publicUrl(s.bucket, f));
 }

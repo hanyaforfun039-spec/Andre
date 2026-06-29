@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
  * MULTI-KLIEN ("template lalu copy"): cukup ganti nilai ini per folder klien,
  * atau set env SITE_URL saat build di Vercel.
  */
-const SITE_URL = process.env.SITE_URL ?? 'https://dealerjaecoosemarang.id';
+const SITE_URL = process.env.SITE_URL ?? 'https://jaecoosemarangjawatengah.com';
 
 // https://astro.build/config
 export default defineConfig({
