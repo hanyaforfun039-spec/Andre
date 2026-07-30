@@ -2,21 +2,42 @@
 /* PromoPopup — banner promo (gambar) tampil sekali saat load, bisa ditutup (X /
    backdrop / Esc) lalu tak muncul lagi (localStorage). Ada tombol WhatsApp
    (nomor sesuai site aktif). Tanpa JS: tidak tampil (progressive enhancement).
-   Gambar dari Supabase Storage bucket "Fitri" (dipakai bersama 4 situs). */
+   Gambar diambil dari public/ REPO INI, bukan dari bucket bersama. Karena tiap
+   sales punya repo sendiri, banner di sini otomatis hanya milik Andre — ganti
+   atau hapus di sini tidak mungkin mempengaruhi situs Harto/Fitri.
+   (Sebelumnya ketiga situs menunjuk satu file di bucket "Fitri", sehingga
+   pop-up Andre & Harto menampilkan banner milik Fitri.) */
 import Icon from './Icon.astro';
 import { site } from '../lib/site';
-import { linkPenawaran } from '../lib/whatsapp';
+import { waLink } from '../lib/whatsapp';
 
-const BANNER = 'https://fxjspvdkeybabxotniov.supabase.co/storage/v1/object/public/Fitri/banner%20baru.jpg';
-const wa = linkPenawaran(site);
+/* Banner sementara: pre-booking OMODA O4 EV, dgn foto + profil Andre.
+   Untuk menonaktifkan pop-up, hapus <PromoPopup /> dari BaseLayout.astro. */
+const BANNER = '/banner.jpeg';
+
+/* Pesan khusus kampanye ini — TIDAK memakai pesanPenawaran() yang generik,
+   karena itu berbunyi "tertarik dengan JAECOO" sedangkan banner ini soal
+   OMODA (merek lain di grup yang sama). Sengaja ditulis di sini, bukan di
+   lib/whatsapp.ts, supaya berkas itu tetap identik di ketiga repo dan mudah
+   dihapus saat kampanye berakhir. Tanpa emoji, mengikuti gaya pesan lain. */
+const PESAN =
+  `Halo ${site.salesName}, saya mau pre-book OMODA O4 EV.\n` +
+  `Saya lihat ada bonus Smart Panoramic Roof untuk 1.000 pembeli pertama.\n` +
+  `Boleh dibantu info harga, cara pre-book, dan perkiraan waktu pengirimannya?`;
+
+const wa = waLink(site.whatsapp, PESAN);
+const ALT =
+  'Pre-booking OMODA O4 EV resmi dibuka. SUV listrik, jarak tempuh 553 km sekali cas. ' +
+  'Bonus Smart Panoramic Roof untuk 1.000 pembeli pertama. ' +
+  `Hubungi ${site.salesName} di ${site.phoneDisplay}.`;
 ---
 <div id="promo-popup" class="ppop" hidden>
   <div class="ppop-backdrop" data-ppop-close aria-hidden="true"></div>
-  <div class="ppop-card" role="dialog" aria-modal="true" aria-label={`Promo ${site.brand}`}>
+  <div class="ppop-card" role="dialog" aria-modal="true" aria-label="Pre-booking OMODA O4 EV">
     <button type="button" class="ppop-close" data-ppop-close aria-label="Tutup promo">
       <Icon name="close" size={20} />
     </button>
-    <img class="ppop-img" src={BANNER} alt={`Promo ${site.brand}`} loading="eager" decoding="async" />
+    <img class="ppop-img" src={BANNER} alt={ALT} loading="eager" decoding="async" />
     <a class="ppop-wa" href={wa} target="_blank" rel="noopener noreferrer">
       <Icon name="whatsapp" size={22} /> <span>Chat WhatsApp</span>
     </a>
