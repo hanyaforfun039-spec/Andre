@@ -45,7 +45,12 @@ const ALT =
 </div>
 
 <script>
-  const KEY = 'promo-popup-v1-closed';
+  /* PENTING: kunci ini menandai "sudah ditutup" dan tersimpan permanen di
+     browser pengunjung. Setiap kali BANNER diganti dengan kampanye baru,
+     kunci ini WAJIB ikut diganti — kalau tidak, semua pengunjung lama yang
+     pernah menutup pop-up sebelumnya tidak akan pernah melihat yang baru.
+     Sebelumnya 'promo-popup-v1-closed' (kampanye banner Fitri). */
+  const KEY = 'promo-popup-omoda-o4-closed';
   const el = document.getElementById('promo-popup');
   if (el) {
     let dismissed = false;
